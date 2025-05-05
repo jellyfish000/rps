@@ -1,6 +1,3 @@
-console.log("HelloWorld")
-
-
 function getComputerChoice(){
     randomNumber = Math.random()
 
@@ -21,7 +18,7 @@ function getHumanChoice(){
 function playRound(humanChoice, computerChoice){
     if (humanChoice === computerChoice){
         console.log("It's a tie!")
-        return 0;
+        return 2;
     } else if (humanChoice === "rock" && computerChoice==="scissors") {
         console.log("You won! Rock beats Scissors ")
         return 1;
@@ -43,19 +40,44 @@ function playRound(humanChoice, computerChoice){
     } 
 }
 
-function playGame(){
-    let roundNumber = 0;
-    let score = 0;
+const buttons = document.querySelectorAll('button');
+const displayResult = document.getElementById('display-result');
+let humanScore = 0;
+let computerScore = 0;
+let gameOver = false;
 
-    for (let i=0; i<5; i++){
-        roundNumber += 1;
-        console.log(roundNumber);
-        let computerChoice = getComputerChoice()
-        let humanChoice = getHumanChoice()
-        score += playRound(computerChoice, humanChoice);
-        
-    }
-    console.log("The score is " + score)
-}
+buttons.forEach(button =>{
+    button.addEventListener('click', () => { // add a click event listener
 
-playGame()
+        if (gameOver) return;
+        let message = ''
+
+        const userMove = button.innerText.toLowerCase();
+        const computerMove = getComputerChoice();
+        const matchResult = playRound(userMove,computerMove)
+        if (matchResult === 1){
+            humanScore += 1;
+            message += `You won! ${userMove} beats ${computerMove}. Your score: ${humanScore}. Computer score: ${computerScore}`;
+        } else if (matchResult === 0){
+            computerScore +=1;
+            message += `You lose! ${computerMove} beats ${userMove}. Your score: ${humanScore}. Computer score: ${computerScore}`;
+            
+        } else {
+            message += `It's a tie. Your score: ${humanScore}. Computer score: ${computerScore}`;
+        }
+
+        if (computerScore === 5 || humanScore ===5 ){
+            gameOver = true;
+            if (computerScore ===5){
+                message += `\n Round over. Computer won the game`;
+            } else{
+                message += `\n Round over. You won the game`;
+            }
+
+        }
+        displayResult.textContent =message;
+    });
+});
+    
+
+
